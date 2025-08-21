@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<taxonomy>
+    <concepts>
+        <concept name="Revenue">
+            <data_type>monetary</data_type>
+            <required>true</required>
+            <validation>must_be_positive</validation>
+        </concept>
+        <concept name="Expenses">
+            <data_type>monetary</data_type>
+            <required>true</required>
+            <validation>must_be_positive</validation>
+        </concept>
+        <concept name="NetIncome">
+            <data_type>monetary</data_type>
+            <required>true</required>
+            <calculation>Revenue - Expenses</calculation>
+        </concept>
+    </concepts>
+</taxonomy>

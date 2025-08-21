@@ -1,0 +1,12 @@
+{
+  "version": 2,
+  "dgSpecHash": "QX39XqbgwsY=",
+  "success": true,
+  "projectFilePath": "/Users/umangchauhan/Documents/Coding/Projects/XBRL/XbrlGenerator/XbrlGenerator.csproj",
+  "expectedPackageFiles": [
+    "/Users/umangchauhan/.nuget/packages/microsoft.netcore.app.ref/8.0.16/microsoft.netcore.app.ref.8.0.16.nupkg.sha512",
+    "/Users/umangchauhan/.nuget/packages/microsoft.aspnetcore.app.ref/8.0.16/microsoft.aspnetcore.app.ref.8.0.16.nupkg.sha512",
+    "/Users/umangchauhan/.nuget/packages/microsoft.netcore.app.host.osx-arm64/8.0.16/microsoft.netcore.app.host.osx-arm64.8.0.16.nupkg.sha512"
+  ],
+  "logs": []
+}
