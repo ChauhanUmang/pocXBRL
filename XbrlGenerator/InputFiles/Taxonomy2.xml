@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<taxonomy>
+    <!-- 
+      Report-level metadata is now required. This defines the "header"
+      information for the iXBRL document.
+    -->
+    <report>
+        <!-- 
+          1. NAMESPACE: Every XBRL tag needs a namespace. 
+             We'll define a simple one for our company, "acme-fin".
+        -->
+        <namespace prefix="acme-fin">http://www.acme.com/financial-reporting/2025</namespace>
+        
+        <!-- 
+          2. UNIT: Every monetary value needs a unit (e.g., USD).
+             We define it once and reference it later.
+        -->
+        <units>
+            <unit id="usd">iso4217:USD</unit>
+        </units>
+        
+        <!-- 
+          3. CONTEXT: Every fact needs a context (e.g., for what period?).
+             We'll define one context for the current reporting period.
+        -->
+        <contexts>
+            <context id="currentPeriod">
+                <entity>
+                    <identifier scheme="http://www.acme.com/cik">1234567890</identifier>
+                </entity>
+                <period>
+                    <instant>2025-12-31</instant>
+                </period>
+            </context>
+        </contexts>
+    </report>
+
+    <!-- 
+      Concept-level metadata is now enhanced to provide the specific details
+      needed for each iXBRL tag.
+    -->
+    <concepts>
+        <concept name="Revenue"
+                 xbrlName="acme-fin:Revenue"
+                 dataType="ix:nonFraction"
+                 contextRef="currentPeriod"
+                 unitRef="usd"
+                 decimals="2">
+            <validation>must_be_positive</validation>
+        </concept>
+        <concept name="Expenses"
+                 xbrlName="acme-fin:Expenses"
+                 dataType="ix:nonFraction" 
+                 contextRef="currentPeriod"
+                 unitRef="usd"
+                 decimals="2">
+            <validation>must_be_positive</validation>
+        </concept>
+        <concept name="NetIncome"
+                 xbrlName="acme-fin:NetIncome"
+                 dataType="ix:nonFraction"
+                 contextRef="currentPeriod"
+                 unitRef="usd"
+                 decimals="2">
+            <calculation>Revenue - Expenses</calculation>
+        </concept>
+    </concepts>
+</taxonomy>
