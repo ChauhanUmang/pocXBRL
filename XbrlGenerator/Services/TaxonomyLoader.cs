@@ -9,24 +9,46 @@ namespace XbrlGenerator.Services
 {
     public class TaxonomyLoader
     {
-        public List<TaxonomyConcept> Load(string filePath)
+        public (ReportInfo, List<TaxonomyConcept>) Load(string filePath)
         {
             var doc = XDocument.Load(filePath);
-            var concepts = new List<TaxonomyConcept>();
 
-            foreach (var conceptElement in doc.Descendants("concept"))
+            var reportElement = doc.Descendants("report").First();
+            var reportInfo = new ReportInfo
             {
-                var concept = new TaxonomyConcept
+                Namespace = new ReportNamespace
                 {
-                    Name = conceptElement.Attribute("name")?.Value ?? "",
-                    DataType = conceptElement.Element("data_type")?.Value ?? "",
-                    IsRequired = bool.Parse(conceptElement.Element("required")?.Value ?? "false"),
-                    Validation = conceptElement.Element("validation")?.Value,
-                    Calculation = conceptElement.Element("calculation")?.Value
-                };
-                concepts.Add(concept);
-            }
-            return concepts;
+                    Prefix = reportElement.Element("namespace")?.Attribute("prefix")?.Value ?? "",
+                    Uri = reportElement.Element("namespace")?.Value ?? ""
+                },
+                Units = reportElement.Descendants("unit").Select(u => new ReportUnit
+                {
+                    Id = u.Attribute("id")?.Value ?? "",
+                    Measure = u.Value
+                }).ToList(),
+                Contexts = reportElement.Descendants("context").Select(c => new ReportContext
+                {
+                    Id = c.Attribute("id")?.Value ?? "",
+                    EntityScheme = c.Element("entity")?.Element("identifier")?.Attribute("scheme")?.Value ?? "",
+                    EntityIdentifier = c.Element("entity")?.Element("identifier")?.Value ?? "",
+                    Instant = DateTime.Parse(c.Element("period")?.Element("instant")?.Value ?? "")
+                }).ToList()
+            };
+
+            // Load Concepts
+            var concepts = doc.Descendants("concept").Select(c => new TaxonomyConcept
+            {
+                Name = c.Attribute("name")?.Value ?? "",
+                XbrlName = c.Attribute("xbrlName")?.Value ?? "",
+                DataType = c.Attribute("dataType")?.Value ?? "",
+                ContextRef = c.Attribute("contextRef")?.Value ?? "",
+                UnitRef = c.Attribute("unitRef")?.Value ?? "",
+                Decimals = int.Parse(c.Attribute("decimals")?.Value ?? "0"),
+                Validation = c.Element("validation")?.Value,
+                Calculation = c.Element("calculation")?.Value
+            }).ToList();
+
+            return (reportInfo, concepts);
         }
     }
 }
