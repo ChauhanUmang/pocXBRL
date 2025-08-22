@@ -6,7 +6,7 @@ Console.WriteLine("Starting XBRL Report Generation...");
 string baseDirectory = AppDomain.CurrentDomain.BaseDirectory;
 string inputDirectory = Path.Combine(baseDirectory, "InputFiles");
 
-string taxonomyPath = Path.Combine(inputDirectory, "Taxonomy.xml");
+string taxonomyPath = Path.Combine(inputDirectory, "Taxonomy2.xml");
 string dataPath = Path.Combine(inputDirectory, "data.csv");
 string templatePath = Path.Combine(inputDirectory, "template.html");
 
@@ -17,7 +17,8 @@ var taxonomyLoader = new TaxonomyLoader();
 var csvReader = new CsvDataReader();
 var calculationEngine = new CalculationEngine();
 var validationEngine = new ValidationEngine();
-var reportRenderer = new ReportRenderer();
+var ixbrlRenderer = new iXBRLRenderer();
+//var reportRenderer = new ReportRenderer();
 var packageGenerator = new PackageGenerator();
 
 try
@@ -26,7 +27,7 @@ try
 
     // Load data
     Console.WriteLine("Loading taxonomy and data...");
-    List<TaxonomyConcept> concepts = taxonomyLoader.Load(taxonomyPath);
+    (ReportInfo reportInfo, List<TaxonomyConcept> concepts) = taxonomyLoader.Load(taxonomyPath);
     List<FinancialData> rawData = csvReader.Read(dataPath);
 
     // Convert list to a dictionary for easier lookup
@@ -55,15 +56,15 @@ try
     }
 
     // Render report
-    Console.WriteLine("Rendering HTML report...");
-    string htmlReport = reportRenderer.Render(templatePath, financialDataDict);
+    Console.WriteLine("Rendering iXBRL report...");
+    string ixbrlReport = ixbrlRenderer.Render(templatePath, financialDataDict, concepts, reportInfo);
 
-    File.WriteAllText(standaloneReportPath, htmlReport);
+    File.WriteAllText(standaloneReportPath, ixbrlReport);
     Console.WriteLine($"Standalone HTML report saved to: {standaloneReportPath}");
 
     // Create final package
     Console.WriteLine("Creating report package...");
-    packageGenerator.CreatePackage(htmlReport, validationErrors, dataPath, taxonomyPath, outputPath);
+    packageGenerator.CreatePackage(ixbrlReport, validationErrors, dataPath, taxonomyPath, outputPath);
 }
 catch (Exception ex)
 {
