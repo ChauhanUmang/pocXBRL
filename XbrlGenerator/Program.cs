@@ -9,6 +9,8 @@ string inputDirectory = Path.Combine(baseDirectory, "InputFiles");
 string taxonomyPath = Path.Combine(inputDirectory, "Taxonomy.xml");
 string dataPath = Path.Combine(inputDirectory, "data.csv");
 string templatePath = Path.Combine(inputDirectory, "template.html");
+
+string standaloneReportPath = Path.Combine(baseDirectory, "GeneratedReport.html");
 string outputPath = Path.Combine(baseDirectory, "ReportPackage.zip");
 
 var taxonomyLoader = new TaxonomyLoader();
@@ -55,6 +57,9 @@ try
     // Render report
     Console.WriteLine("Rendering HTML report...");
     string htmlReport = reportRenderer.Render(templatePath, financialDataDict);
+
+    File.WriteAllText(standaloneReportPath, htmlReport);
+    Console.WriteLine($"Standalone HTML report saved to: {standaloneReportPath}");
 
     // Create final package
     Console.WriteLine("Creating report package...");
